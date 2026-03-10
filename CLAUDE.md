@@ -121,7 +121,7 @@ Fields shown above the editor in editing state:
 - **Language** dropdown — manual override; updates Monaco language immediately
   - Supported extensions: `js`, `jsx`, `ts`, `tsx`, `py`, `java`, `cpp`, `c`, `cs`, `go`, `rs`, `html`, `css`, `json`, `md`, `sh`, `yaml`, `yml`, `sql`
   - Fallback: `plaintext`
-- **Description** input — becomes the snapshot name on save
+- **Description** input 
 
 ---
 
@@ -144,7 +144,7 @@ Fields shown above the editor in editing state:
 ### 6-5. Snapshot Sidebar
 
 - Lists all snapshots sorted newest first
-- Each item shows: filename, snapshot name, snapshot description, relative time (e.g. "2h ago")
+- Each item shows: filename(snapshot name), snapshot description, relative time (e.g. "2h ago")
   - Absolute timestamp shown on hover as tooltip
 - Clicking an item enters viewing state and loads that snapshot
 - Currently active snapshot is highlighted
@@ -194,9 +194,6 @@ Fields shown above the editor in editing state:
 - Fixed bottom-right position
 - Auto-dismiss after 2–3 seconds
 - Triggers: snapshot saved, code copied
-
-### Modals
-- **Save modal:** snapshot name input + Cancel / Save
 
 ---
 

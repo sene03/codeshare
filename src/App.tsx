@@ -1,35 +1,147 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { Toaster } from '@/components/ui/sonner'
+import { toast } from 'sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { subscribeToSnapshots, saveSnapshot, type Snapshot } from '@/lib/snapshots'
+import Header from '@/components/Header'
+import Sidebar from '@/components/Sidebar'
+import EditorArea from '@/components/EditorArea'
+import NewSnapshotModal from '@/components/NewSnapshotModal'
 
-function App() {
-  const [count, setCount] = useState(0)
+export type SidebarMode = 'default' | 'latest'
+
+export default function App() {
+  const [snapshots, setSnapshots] = useState<Snapshot[]>([])
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [sidebarMode, setSidebarMode] = useState<SidebarMode>('default')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isDark, setIsDark] = useState(() => {
+    return localStorage.getItem('theme') === 'dark'
+  })
+
+  const prevSnapshotIdsRef = useRef<Set<string>>(new Set())
+
+  // Apply theme to document
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+    }
+  }, [isDark])
+
+  // Subscribe to Firestore snapshots
+  useEffect(() => {
+    const unsub = subscribeToSnapshots((snaps) => {
+      setSnapshots(snaps)
+
+      if (sidebarMode === 'latest' && snaps.length > 0) {
+        setSelectedId(snaps[0].id)
+      } else if (selectedId === null && snaps.length > 0) {
+        setSelectedId(snaps[0].id)
+      }
+
+      prevSnapshotIdsRef.current = new Set(snaps.map((s) => s.id))
+    })
+    return unsub
+  }, [sidebarMode]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const selectedSnapshot = snapshots.find((s) => s.id === selectedId) ?? null
+
+  const openNewModal = useCallback(() => {
+    setIsModalOpen(true)
+  }, [])
+
+  const handleSave = async (data: {
+    code: string
+    name: string
+    language: string
+    fileName: string | null
+  }) => {
+    setIsSaving(true)
+    try {
+      const id = await saveSnapshot(data)
+      setSelectedId(id)
+      setIsModalOpen(false)
+      toast.success(`Snapshot saved: ${data.name}`)
+    } catch (err) {
+      console.error(err)
+      toast.error('Failed to save snapshot')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleCopyCode = useCallback(() => {
+    const code = selectedSnapshot?.code ?? ''
+    navigator.clipboard.writeText(code).then(() => {
+      toast.success('Code copied to clipboard')
+    })
+  }, [selectedSnapshot])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const mod = e.ctrlKey || e.metaKey
+      if (mod && e.key === 'n') {
+        e.preventDefault()
+        if (!isModalOpen) openNewModal()
+      }
+      if (mod && e.shiftKey && e.key === 'C') {
+        e.preventDefault()
+        handleCopyCode()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [openNewModal, handleCopyCode, isModalOpen])
+
+  const handleSelectSnapshot = (id: string) => {
+    setSelectedId(id)
+    setSidebarMode('default')
+  }
+
+  const handleSidebarModeChange = (mode: SidebarMode) => {
+    setSidebarMode(mode)
+    if (mode === 'latest' && snapshots.length > 0) {
+      setSelectedId(snapshots[0].id)
+    }
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <TooltipProvider>
+      <div className="flex flex-col h-screen bg-background text-foreground">
+        <Header
+          sidebarMode={sidebarMode}
+          onSidebarModeChange={handleSidebarModeChange}
+          isDark={isDark}
+          onToggleTheme={() => setIsDark((d) => !d)}
+          onCopyCode={handleCopyCode}
+          onNewSnapshot={openNewModal}
+        />
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar
+            snapshots={snapshots}
+            selectedId={selectedId}
+            onSelect={handleSelectSnapshot}
+          />
+          <EditorArea
+            snapshot={selectedSnapshot}
+            isDark={isDark}
+          />
+        </div>
+        <NewSnapshotModal
+          open={isModalOpen}
+          isDark={isDark}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSave}
+          isSaving={isSaving}
+        />
+        <Toaster position="bottom-right" richColors />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </TooltipProvider>
   )
 }
-
-export default App
