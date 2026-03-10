@@ -74,7 +74,10 @@ export default function NewSnapshotModal({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="max-w-4xl w-full h-[85vh] flex flex-col gap-0 p-0 overflow-hidden">
+      <DialogContent
+        className="flex flex-col gap-0 p-0 overflow-hidden"
+        style={{ width: '80vw', maxWidth: '80vw', height: '80vh' }}
+      >
         <DialogHeader className="px-6 pt-5 pb-0 shrink-0">
           <DialogTitle>New Snapshot</DialogTitle>
         </DialogHeader>
