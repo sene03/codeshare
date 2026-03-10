@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import MonacoEditor from '@monaco-editor/react'
 import {
   Dialog,
@@ -71,6 +71,10 @@ export default function NewSnapshotModal({
     setLanguage('plaintext')
     setDescription('')
   }
+    
+  const handleEditorMount: OnMount = (editor) => {
+    editor.focus()
+  }
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
@@ -124,6 +128,7 @@ export default function NewSnapshotModal({
         {/* Editor */}
         <div className="flex-1 overflow-hidden">
           <MonacoEditor
+            onMount={handleEditorMount}
             height="100%"
             language={language}
             value={code}
