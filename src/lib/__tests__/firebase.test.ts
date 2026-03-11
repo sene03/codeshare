@@ -16,7 +16,7 @@ import { resolve } from 'path'
 config({ path: resolve(process.cwd(), '.env') })
 
 // Dynamically import after env is loaded
-const { initializeApp, getApps, deleteApp } = await import('firebase/app')
+const { initializeApp, deleteApp } = await import('firebase/app')
 const {
   getFirestore,
   doc,

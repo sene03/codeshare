@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import MonacoEditor from '@monaco-editor/react'
+import { useState } from 'react'
+import MonacoEditor, { type OnMount } from '@monaco-editor/react'
 import {
   Dialog,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+import Button from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
