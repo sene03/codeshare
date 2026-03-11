@@ -29,7 +29,7 @@ export default function Header({
   }
 
   return (
-    <header className="flex items-center justify-between px-4 py-2 border-b bg-background shrink-0">
+    <header className="flex items-center justify-between px-4 pb-4 pt-2 border-b bg-background shrink-0">
       <span className="font-bold text-lg tracking-tight select-none">CodeShare</span>
       <div className="flex items-center gap-2">
         {/* Default / Latest toggle */}

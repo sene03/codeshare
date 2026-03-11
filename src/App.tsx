@@ -114,7 +114,7 @@ export default function App() {
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col h-screen bg-background text-foreground">
+      <div className="flex flex-col h-screen px-12 py-8 bg-background text-foreground">
         <Header
           sidebarMode={sidebarMode}
           onSidebarModeChange={handleSidebarModeChange}
