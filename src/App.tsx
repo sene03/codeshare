@@ -86,10 +86,11 @@ export default function App() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const mod = e.ctrlKey || e.metaKey
-      if (mod && e.key === 'n') {
-        e.preventDefault()
-        if (!isModalOpen) openNewModal()
-      }
+      // TODO: new snapshot - 다른 단축키로 매핑할지 아니면 없앨지? 
+      // if (mod && e.key === 'n') {
+      //   e.preventDefault()
+      //   if (!isModalOpen) openNewModal()
+      // }
       if (mod && e.shiftKey && e.key === 'C') {
         e.preventDefault()
         handleCopyCode()
