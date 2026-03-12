@@ -6,6 +6,7 @@ import { subscribeToSnapshots, saveSnapshot, type Snapshot } from '@/lib/snapsho
 import Header from '@/components/Header'
 import Sidebar from '@/components/Sidebar'
 import EditorArea from '@/components/EditorArea'
+import Footer from '@/components/Footer'
 import NewSnapshotModal from '@/components/NewSnapshotModal'
 
 export type SidebarMode = 'default' | 'latest'
@@ -47,7 +48,7 @@ export default function App() {
       prevSnapshotIdsRef.current = new Set(snaps.map((s) => s.id))
     })
     return unsub
-  }, [sidebarMode]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [sidebarMode]) 
 
   const selectedSnapshot = snapshots.find((s) => s.id === selectedId) ?? null
 
@@ -114,7 +115,7 @@ export default function App() {
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col h-screen px-12 py-8 bg-background text-foreground">
+      <div className="flex flex-col h-screen px-12 pt-8 bg-background text-foreground">
         <Header
           sidebarMode={sidebarMode}
           onSidebarModeChange={handleSidebarModeChange}
@@ -134,6 +135,7 @@ export default function App() {
             isDark={isDark}
           />
         </div>
+        <Footer />
         <NewSnapshotModal
           open={isModalOpen}
           isDark={isDark}
