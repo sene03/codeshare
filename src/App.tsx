@@ -12,6 +12,12 @@ import Sidebar from '@/components/Sidebar';
 import EditorArea from '@/components/EditorArea';
 import Footer from '@/components/Footer';
 import NewSnapshotModal from '@/components/NewSnapshotModal';
+import WhatsNewModal from '@/components/WhatsNewModal';
+import {
+  fetchLatestWhatsNew,
+  getSeenWhatsNewId,
+  type WhatsNewEntry,
+} from '@/lib/whatsNew';
 
 export type SidebarMode = 'default' | 'latest';
 
@@ -24,8 +30,22 @@ export default function App() {
   const [isDark, setIsDark] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
+  const [whatsNewEntry, setWhatsNewEntry] = useState<WhatsNewEntry | null>(
+    null,
+  );
+  const [isWhatsNewOpen, setIsWhatsNewOpen] = useState(false);
 
   const prevSnapshotIdsRef = useRef<Set<string>>(new Set());
+
+  // Fetch and show What's New on mount
+  useEffect(() => {
+    fetchLatestWhatsNew().then((entry) => {
+      if (!entry) return;
+      if (getSeenWhatsNewId() === entry.id) return;
+      setWhatsNewEntry(entry);
+      setIsWhatsNewOpen(true);
+    });
+  }, []);
 
   // Apply theme to document
   useEffect(() => {
@@ -144,6 +164,11 @@ export default function App() {
           onClose={() => setIsModalOpen(false)}
           onSave={handleSave}
           isSaving={isSaving}
+        />
+        <WhatsNewModal
+          entry={whatsNewEntry}
+          open={isWhatsNewOpen}
+          onClose={() => setIsWhatsNewOpen(false)}
         />
         <Toaster position="bottom-right" richColors />
       </div>
