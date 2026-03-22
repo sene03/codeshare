@@ -42,7 +42,7 @@ export default function Sidebar({
         <AlignLeft className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm font-medium">Snapshots</span>
       </div>
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 h-full">
         <div className="py-1">
           {snapshots.length === 0 && (
             <p className="text-xs text-muted-foreground px-3 py-4 text-center">
