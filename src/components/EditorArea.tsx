@@ -1,14 +1,14 @@
-import MonacoEditor from '@monaco-editor/react'
-import type { Snapshot } from '@/lib/snapshots'
+import MonacoEditor from '@monaco-editor/react';
+import type { Snapshot } from '@/lib/snapshots';
 
 interface EditorAreaProps {
-  snapshot: Snapshot | null
-  isDark: boolean
+  snapshot: Snapshot | null;
+  isDark: boolean;
 }
 
 export default function EditorArea({ snapshot, isDark }: EditorAreaProps) {
-  const code = snapshot?.code ?? ''
-  const language = snapshot?.language ?? 'plaintext'
+  const code = snapshot?.code ?? '';
+  const language = snapshot?.language ?? 'plaintext';
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
@@ -37,5 +37,5 @@ export default function EditorArea({ snapshot, isDark }: EditorAreaProps) {
         />
       </div>
     </div>
-  )
+  );
 }

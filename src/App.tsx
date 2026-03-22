@@ -1,28 +1,28 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Toaster } from '@/components/ui/sonner';
+import { toast } from 'sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import {
   subscribeToSnapshots,
   saveSnapshot,
   type Snapshot,
-} from "@/lib/snapshots";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import EditorArea from "@/components/EditorArea";
-import Footer from "@/components/Footer";
-import NewSnapshotModal from "@/components/NewSnapshotModal";
+} from '@/lib/snapshots';
+import Header from '@/components/Header';
+import Sidebar from '@/components/Sidebar';
+import EditorArea from '@/components/EditorArea';
+import Footer from '@/components/Footer';
+import NewSnapshotModal from '@/components/NewSnapshotModal';
 
-export type SidebarMode = "default" | "latest";
+export type SidebarMode = 'default' | 'latest';
 
 export default function App() {
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [sidebarMode, setSidebarMode] = useState<SidebarMode>("default");
+  const [sidebarMode, setSidebarMode] = useState<SidebarMode>('default');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
+    return localStorage.getItem('theme') === 'dark';
   });
 
   const prevSnapshotIdsRef = useRef<Set<string>>(new Set());
@@ -30,11 +30,11 @@ export default function App() {
   // Apply theme to document
   useEffect(() => {
     if (isDark) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
     } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
   }, [isDark]);
 
@@ -43,7 +43,7 @@ export default function App() {
     const unsub = subscribeToSnapshots((snaps) => {
       setSnapshots(snaps);
 
-      if (sidebarMode === "latest" && snaps.length > 0) {
+      if (sidebarMode === 'latest' && snaps.length > 0) {
         setSelectedId(snaps[0].id);
       } else if (selectedId === null && snaps.length > 0) {
         setSelectedId(snaps[0].id);
@@ -74,16 +74,16 @@ export default function App() {
       toast.success(`Snapshot saved: ${data.name}`);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to save snapshot");
+      toast.error('Failed to save snapshot');
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleCopyCode = useCallback(() => {
-    const code = selectedSnapshot?.code ?? "";
+    const code = selectedSnapshot?.code ?? '';
     navigator.clipboard.writeText(code).then(() => {
-      toast.success("Code copied to clipboard");
+      toast.success('Code copied to clipboard');
     });
   }, [selectedSnapshot]);
 
@@ -93,27 +93,27 @@ export default function App() {
       const mod = e.ctrlKey || e.metaKey;
       // Alt+N → new snapshot (Ctrl/Cmd+N conflicts with browser new-window)
       // Use e.code instead of e.key because Alt on macOS remaps key to dead/special chars
-      if (e.altKey && e.code === "KeyN") {
+      if (e.altKey && e.code === 'KeyN') {
         e.preventDefault();
         if (!isModalOpen) openNewModal();
       }
-      if (mod && e.shiftKey && e.key === "C") {
+      if (mod && e.shiftKey && e.key === 'C') {
         e.preventDefault();
         handleCopyCode();
       }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, [openNewModal, handleCopyCode, isModalOpen]);
 
   const handleSelectSnapshot = (id: string) => {
     setSelectedId(id);
-    setSidebarMode("default");
+    setSidebarMode('default');
   };
 
   const handleSidebarModeChange = (mode: SidebarMode) => {
     setSidebarMode(mode);
-    if (mode === "latest" && snapshots.length > 0) {
+    if (mode === 'latest' && snapshots.length > 0) {
       setSelectedId(snapshots[0].id);
     }
   };

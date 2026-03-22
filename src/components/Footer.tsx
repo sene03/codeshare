@@ -1,7 +1,7 @@
-import { Github } from 'lucide-react'
+import { Github } from 'lucide-react';
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="flex items-center justify-between px-4 py-3 text-xs text-muted-foreground border-t">
@@ -18,5 +18,5 @@ export default function Footer() {
         <span>GitHub</span>
       </a>
     </footer>
-  )
+  );
 }

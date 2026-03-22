@@ -1,31 +1,41 @@
-import { formatDistanceToNow } from 'date-fns'
-import { AlignLeft } from 'lucide-react'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import type { Snapshot } from '@/lib/snapshots'
+import { formatDistanceToNow } from 'date-fns';
+import { AlignLeft } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import type { Snapshot } from '@/lib/snapshots';
 
 interface SidebarProps {
-  snapshots: Snapshot[]
-  selectedId: string | null
-  onSelect: (id: string) => void
+  snapshots: Snapshot[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
 }
 
 function RelativeTime({ snapshot }: { snapshot: Snapshot }) {
-  const date = snapshot.createdAt.toDate()
-  const relative = formatDistanceToNow(date, { addSuffix: true })
-  const absolute = date.toLocaleString()
+  const date = snapshot.createdAt.toDate();
+  const relative = formatDistanceToNow(date, { addSuffix: true });
+  const absolute = date.toLocaleString();
   return (
     <Tooltip>
       <TooltipTrigger>
-        <span className="text-xs text-muted-foreground cursor-default">{relative}</span>
+        <span className="text-xs text-muted-foreground cursor-default">
+          {relative}
+        </span>
       </TooltipTrigger>
       <TooltipContent>{absolute}</TooltipContent>
     </Tooltip>
-  )
+  );
 }
 
-export default function Sidebar({ snapshots, selectedId, onSelect }: SidebarProps) {
+export default function Sidebar({
+  snapshots,
+  selectedId,
+  onSelect,
+}: SidebarProps) {
   return (
     <aside className="w-56 border-r flex flex-col shrink-0 bg-background">
       <div className="flex items-center gap-2 px-3 py-2 border-b">
@@ -43,7 +53,9 @@ export default function Sidebar({ snapshots, selectedId, onSelect }: SidebarProp
             <div key={snap.id}>
               <button
                 className={`w-full text-left px-3 py-2 transition-colors hover:bg-accent ${
-                  selectedId === snap.id ? 'bg-accent border-l-2 border-primary' : ''
+                  selectedId === snap.id
+                    ? 'bg-accent border-l-2 border-primary'
+                    : ''
                 }`}
                 onClick={() => onSelect(snap.id)}
               >
@@ -55,7 +67,9 @@ export default function Sidebar({ snapshots, selectedId, onSelect }: SidebarProp
                     {snap.fileName ?? 'untitled'}
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground truncate mt-0.5">{snap.name}</p>
+                <p className="text-xs text-muted-foreground truncate mt-0.5">
+                  {snap.name}
+                </p>
                 <RelativeTime snapshot={snap} />
               </button>
               {idx < snapshots.length - 1 && <Separator />}
@@ -64,5 +78,5 @@ export default function Sidebar({ snapshots, selectedId, onSelect }: SidebarProp
         </div>
       </ScrollArea>
     </aside>
-  )
+  );
 }
