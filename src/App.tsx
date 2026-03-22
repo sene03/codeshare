@@ -25,6 +25,7 @@ export default function App() {
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sidebarMode, setSidebarMode] = useState<SidebarMode>('default');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDark, setIsDark] = useState(() => {
@@ -168,6 +169,8 @@ export default function App() {
             snapshots={snapshots}
             selectedId={selectedId}
             onSelect={handleSelectSnapshot}
+            isCollapsed={isSidebarCollapsed}
+            onToggle={() => setIsSidebarCollapsed((collapsed) => !collapsed)}
           />
           <EditorArea snapshot={selectedSnapshot} isDark={isDark} />
         </div>
