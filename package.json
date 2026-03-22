@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "prepare": "husky install",
-    "format": "prettier --write src"
+    "format": "prettier --write src",
+    "type-check": "tsc --noEmit",
+    "check": "pnpm type-check && pnpm lint && pnpm format:check",
+    "fix": "pnpm lint:fix && pnpm format"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
