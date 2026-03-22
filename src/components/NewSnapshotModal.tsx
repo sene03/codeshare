@@ -17,10 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  detectLanguageFromFilename,
-  SUPPORTED_LANGUAGES,
-} from '@/lib/language';
+import { detectLanguageFromFilename, getMonacoLanguages } from '@/lib/language';
 
 interface NewSnapshotModalProps {
   open: boolean;
@@ -46,6 +43,12 @@ export default function NewSnapshotModal({
   const [fileName, setFileName] = useState('');
   const [language, setLanguage] = useState('plaintext');
   const [description, setDescription] = useState('');
+  const [languages, setLanguages] = useState<string[]>([]);
+
+  // Load the full Monaco language list once on mount
+  useEffect(() => {
+    getMonacoLanguages().then(setLanguages);
+  }, []);
 
   const handleFileNameChange = (name: string) => {
     setFileName(name);
@@ -147,7 +150,7 @@ export default function NewSnapshotModal({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {SUPPORTED_LANGUAGES.map((lang) => (
+                {languages.map((lang) => (
                   <SelectItem key={lang} value={lang}>
                     {lang}
                   </SelectItem>
