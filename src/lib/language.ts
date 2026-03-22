@@ -18,7 +18,7 @@ const extToLanguage: Record<string, string> = {
   yaml: 'yaml',
   yml: 'yaml',
   sql: 'sql',
-}
+};
 
 export const SUPPORTED_LANGUAGES = [
   'plaintext',
@@ -38,9 +38,9 @@ export const SUPPORTED_LANGUAGES = [
   'shell',
   'yaml',
   'sql',
-]
+];
 
 export function detectLanguageFromFilename(filename: string): string {
-  const ext = filename.split('.').pop()?.toLowerCase() ?? ''
-  return extToLanguage[ext] ?? 'plaintext'
+  const ext = filename.split('.').pop()?.toLowerCase() ?? '';
+  return extToLanguage[ext] ?? 'plaintext';
 }
