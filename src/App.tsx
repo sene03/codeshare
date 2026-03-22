@@ -143,7 +143,6 @@ export default function App() {
 
   const handleSelectSnapshot = (id: string) => {
     setSelectedId(id);
-    setSidebarMode('default');
   };
 
   const handleSidebarModeChange = (mode: SidebarMode) => {
