@@ -87,17 +87,20 @@ export default function Sidebar({
             {snapshots.map((snap, idx) => (
               <div key={snap.id}>
                 <button
-                  className={`w-full text-left px-3 py-2 transition-colors hover:bg-accent ${
-                    selectedId === snap.id
-                      ? 'bg-accent border-l-2 border-primary'
-                      : ''
-                  }`}
+                  className={cn(
+                    'w-full border-l-2 border-transparent px-3 py-2 text-left transition-colors hover:bg-accent',
+                    selectedId === snap.id && 'bg-accent border-primary',
+                  )}
                   onClick={() => onSelect(snap.id)}
                 >
-                  <div className="flex items-center gap-1">
-                    {selectedId === snap.id && (
-                      <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                    )}
+                  <div className="flex items-center">
+                    <span
+                      className={cn(
+                        selectedId === snap.id
+                          ? 'bg-primary'
+                          : 'bg-transparent',
+                      )}
+                    />
                     <span className="text-sm font-medium truncate">
                       {snap.fileName ?? 'untitled'}
                     </span>
