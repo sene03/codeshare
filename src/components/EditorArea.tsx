@@ -13,7 +13,7 @@ export default function EditorArea({ snapshot, isDark }: EditorAreaProps) {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       {snapshot && (
-        <div className="px-4 py-2 border-b flex items-center gap-3 text-sm bg-muted/40 shrink-0">
+        <div className="h-10 px-4 border-b flex items-center gap-3 text-sm bg-muted/40 shrink-0">
           <span className="font-medium">{snapshot.fileName ?? 'untitled'}</span>
           <span className="text-muted-foreground">·</span>
           <span className="text-muted-foreground">{snapshot.name}</span>

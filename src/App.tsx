@@ -25,6 +25,7 @@ export default function App() {
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sidebarMode, setSidebarMode] = useState<SidebarMode>('default');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDark, setIsDark] = useState(() => {
@@ -61,6 +62,19 @@ export default function App() {
   // Subscribe to Firestore snapshots
   useEffect(() => {
     const unsub = subscribeToSnapshots((snaps) => {
+      const prevIds = prevSnapshotIdsRef.current;
+      const currentIds = new Set(snaps.map((s) => s.id));
+
+      // find new snapshots
+      const newSnapshots = snaps.filter((s) => !prevIds.has(s.id));
+
+      // 최초 로딩 시에는 toast 안 띄우기
+      if (prevIds.size > 0 && newSnapshots.length > 0) {
+        newSnapshots.forEach((snap) => {
+          toast.success(`New snapshot added: ${snap.fileName}`);
+        });
+      }
+
       setSnapshots(snaps);
 
       if (sidebarMode === 'latest' && snaps.length > 0) {
@@ -69,7 +83,7 @@ export default function App() {
         setSelectedId(snaps[0].id);
       }
 
-      prevSnapshotIdsRef.current = new Set(snaps.map((s) => s.id));
+      prevSnapshotIdsRef.current = currentIds;
     });
     return unsub;
   }, [sidebarMode]);
@@ -91,7 +105,7 @@ export default function App() {
       const id = await saveSnapshot(data);
       setSelectedId(id);
       setIsModalOpen(false);
-      toast.success(`Snapshot saved: ${data.name}`);
+      toast.success(`Snapshot saved: ${data.fileName}`);
     } catch (err) {
       console.error(err);
       toast.error('Failed to save snapshot');
@@ -118,6 +132,7 @@ export default function App() {
         if (!isModalOpen) openNewModal();
       }
       if (mod && e.shiftKey && e.key === 'C') {
+        // TODO: Not working
         e.preventDefault();
         handleCopyCode();
       }
@@ -154,6 +169,8 @@ export default function App() {
             snapshots={snapshots}
             selectedId={selectedId}
             onSelect={handleSelectSnapshot}
+            isCollapsed={isSidebarCollapsed}
+            onToggle={() => setIsSidebarCollapsed((collapsed) => !collapsed)}
           />
           <EditorArea snapshot={selectedSnapshot} isDark={isDark} />
         </div>
@@ -170,7 +187,7 @@ export default function App() {
           open={isWhatsNewOpen}
           onClose={() => setIsWhatsNewOpen(false)}
         />
-        <Toaster position="bottom-right" richColors />
+        <Toaster position="top-left" richColors />
       </div>
     </TooltipProvider>
   );
